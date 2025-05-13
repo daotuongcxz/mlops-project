@@ -3,7 +3,7 @@ pipeline{
 
     environment {
         VENV_DIR = 'venv'
-        GCP_PROJECT = "My First Project"
+        GCP_PROJECT = "long-state-452316-d2"
         GCLOUD_PATH = "/var/jenkins_home/google-cloud-sdk/bin"
         registry = 'truongnguyen250902'
         registryCredential = 'dockerhub'
