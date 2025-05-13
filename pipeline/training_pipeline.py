@@ -6,8 +6,8 @@ from config.paths_config import *
 
 if __name__ == "__main__":
     ### 1. Data Ingestion
-    # data_ingestion = DataIngestion(read_yaml(CONFIG_PATH))
-    # data_ingestion.run()
+    data_ingestion = DataIngestion(read_yaml(CONFIG_PATH))
+    data_ingestion.run()
 
     ### 2. Data processing 
     processor = DataProcessor(TRAIN_FILE_PATH, TEST_FILE_PATH, PROCESSED_DIR, CONFIG_PATH)

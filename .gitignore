@@ -4,3 +4,4 @@ logs/
 MLOPS_k6.egg-info/
 notebook/*.pkl
 *.pkl
+.env
