@@ -33,17 +33,21 @@ pipeline{
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Push Docker Image') {
             steps {
                 withCredentials([file(credentialsId: 'gcp-key', variable: 'GCP_CREDENTIALS')]) {
-                    sh '''
-                    cp ${GCP_CREDENTIALS} long-state-452316-d2-1e09a3e52402.json
-                    docker build -t ml-project .
-                    rm -f long-state-452316-d2-1e09a3e52402.json
-                    '''
-                        docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push()
-                        dockerImage.push('latest')
+                    script {
+                        sh '''
+                        cp ${GCP_CREDENTIALS} long-state-452316-d2-1e09a3e52402.json
+                        docker build -t ml-project .
+                        rm -f long-state-452316-d2-1e09a3e52402.json
+                        '''
+                        
+                        docker.withRegistry('', registryCredential) {
+                            def dockerImage = docker.build("ml-project")
+                            dockerImage.push()
+                            dockerImage.push('latest')
+                        }
                     }
                 }
             }
