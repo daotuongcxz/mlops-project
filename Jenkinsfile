@@ -45,8 +45,8 @@ pipeline{
                 ]) {
                     script {
                         sh '''
-                            cp "${GCP_CREDENTIALS}" long-state-452316-d2-1e09a3e52402.json
-                            docker build -t ${DOCKER_USER}/ml-project:${env.BUILD_NUMBER} -t ${DOCKER_USER}/ml-project:latest .
+                            cp "$GCP_CREDENTIALS" long-state-452316-d2-1e09a3e52402.json
+                            docker build -t "$DOCKER_USER"/ml-project .
                             rm -f long-state-452316-d2-1e09a3e52402.json
                         '''
                         
