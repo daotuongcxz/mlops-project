@@ -33,13 +33,14 @@ pipeline{
             }
         }
 
-        stage('Building and Pushing Docker Image'){
+        stage('Building and Pushing Docker Image to GCR'){
             steps{
                 withCredentials([file(credentialsId: 'gcp-key' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
                     script{
-                        echo 'Building and Pushing Docker Image.............'
+                        echo 'Building and Pushing Docker Image to GCR.............'
                         sh '''
                         export PATH=$PATH:${GCLOUD_PATH}
+
 
                         gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
@@ -49,13 +50,10 @@ pipeline{
 
                         docker build -t ml-project:latest .
 
-                        '''
-                        docker.withRegistry( '', registryCredential ) {
-                            dockerImage.push()
-                            dockerImage.push('latest')
-                        }
-                    }
+                        docker push ml-project:latest 
 
+                        '''
+                    }
                 }
             }
         }
