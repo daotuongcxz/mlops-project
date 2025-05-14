@@ -5,7 +5,7 @@ pipeline{
         VENV_DIR = 'venv'
         GCP_PROJECT = "long-state-452316-d2"
         GCLOUD_PATH = "/var/jenkins_home/google-cloud-sdk/bin"
-        registry = 'truongnguyen250902'
+        registry = 'truongnguyen250902/mlops'
         registryCredential = 'dockerhub'
     }
 
@@ -47,7 +47,7 @@ pipeline{
                         sh """
                             rm -f long-state-452316-d2-1e09a3e52402.json
                         """
-                        docker.withRegistry( '', 'dockerhub' ) {
+                        docker.withRegistry( '', registryCredential ) {
                             // dockerImage.push()
                             dockerImage.push('latest')
                         }
