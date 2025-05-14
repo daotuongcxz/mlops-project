@@ -44,7 +44,6 @@ pipeline{
                         '''
                         
                         docker.withRegistry('', registryCredential) {
-                            def dockerImage = docker.build("ml-project")
                             dockerImage.push()
                             dockerImage.push('latest')
                         }
