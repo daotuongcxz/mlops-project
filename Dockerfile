@@ -1,30 +1,33 @@
-# Use a lightweight Python image
-FROM python:slim
+# ========== Stage 1: Builder ==========
+FROM python:3.11 as builder
 
-# Set environment variables to prevent Python from writing .pyc files & Ensure Python output is not buffered
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-# Set the working directory
 WORKDIR /app
 
-# Install system dependencies required by LightGBM
+COPY . .
+
+RUN pip install --no-cache-dir -e .
+
+COPY long-state-452316-d2-1e09a3e52402.json /tmp/credentials.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json
+
+RUN PYTHONPATH=/app python pipeline/training_pipeline.py
+
+# ========== Stage 2: Runtime ==========
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /app/ /app/
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the application code
-COPY . .
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    FLASK_APP=application.py
 
-# Install the package in editable mode
-RUN pip install --no-cache-dir -e .
-
-# Train the model before running the application
-RUN python pipeline/training_pipeline.py
-
-# Expose the port that Flask will run on
 EXPOSE 5000
-
-# Command to run the app
 CMD ["python", "application.py"]

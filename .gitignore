@@ -6,3 +6,4 @@ notebook/*.pkl
 *.pkl
 .env
 __pycache__/
+long-state-452316-d2-1e09a3e52402.json
