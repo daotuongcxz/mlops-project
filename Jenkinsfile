@@ -48,12 +48,12 @@ pipeline{
                         
                         // Build
                         sh """
-                            cp "${GCP_CRED}" credentials.json
+                            cp "${GCP_CRED}" long-state-452316-d2-1e09a3e52402.json
                             docker build \\
                                 -t "${imageName}:${env.BUILD_NUMBER}" \\
                                 -t "${imageName}:latest" \\
                                 .
-                            rm -f credentials.json
+                            rm -f long-state-452316-d2-1e09a3e52402.json
                         """
                         
                         withEnv(["DOCKER_PWD=${DOCKER_PWD}", "DOCKER_USER=${DOCKER_USER}"]) {
