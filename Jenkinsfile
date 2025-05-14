@@ -41,7 +41,10 @@ pipeline{
                     script {                        
                         sh """
                             cp "${GCP_CRED}" long-state-452316-d2-1e09a3e52402.json
-                            dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+                        """
+                        dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+
+                        sh """
                             rm -f long-state-452316-d2-1e09a3e52402.json
                         """
                         docker.withRegistry( '', registryCredential ) {
