@@ -45,7 +45,7 @@ pipeline{
                             rm -f long-state-452316-d2-1e09a3e52402.json
                         """
                         docker.withRegistry( '', registryCredential ) {
-                            dockerImage.push()
+                            // dockerImage.push()
                             dockerImage.push('latest')
                         }
                     }
