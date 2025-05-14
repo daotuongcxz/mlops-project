@@ -58,7 +58,7 @@ pipeline{
                         
                         withEnv(["DOCKER_PWD=${DOCKER_PWD}", "DOCKER_USER=${DOCKER_USER}"]) {
                             sh '''
-                                echo "$DOCKER_PWD" | docker login -u "$DOCKER_USER" --password-stdin "$DOCKER_REGISTRY"
+                                echo "$DOCKER_PWD" | docker login -u "$DOCKER_USER" --password-stdin
                                 docker push "$DOCKER_USER"/ml-project:${env.BUILD_NUMBER}
                                 docker push "$DOCKER_USER"/ml-project:latest
                             '''
