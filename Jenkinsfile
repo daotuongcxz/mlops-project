@@ -36,32 +36,17 @@ pipeline{
         stage('Build and Push') {
             steps {
                 withCredentials([
-                    file(credentialsId: 'gcp-key', variable: 'GCP_CRED'),
-                    usernamePassword(
-                        credentialsId: 'dockerhub',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PWD'
-                    )
+                    file(credentialsId: 'gcp-key', variable: 'GCP_CRED')
                 ]) {
-                    script {
-                        def imageName = "${DOCKER_USER}/ml-project"
-                        
-                        // Build
+                    script {                        
                         sh """
                             cp "${GCP_CRED}" long-state-452316-d2-1e09a3e52402.json
-                            docker build \\
-                                -t "${imageName}:${env.BUILD_NUMBER}" \\
-                                -t "${imageName}:latest" \\
-                                .
+                            dockerImage = docker.build registry + ":$BUILD_NUMBER" 
                             rm -f long-state-452316-d2-1e09a3e52402.json
                         """
-                        
-                        withEnv(["DOCKER_PWD=${DOCKER_PWD}", "DOCKER_USER=${DOCKER_USER}", "BUILD_NUMBER=${env.BUILD_NUMBER}"]) {
-                            sh '''
-                                echo "$DOCKER_PWD" | docker login -u "$DOCKER_USER" --password-stdin
-                                docker push "$DOCKER_USER"/ml-project:"$BUILD_NUMBER"
-                                docker push "$DOCKER_USER"/ml-project:latest
-                            '''
+                        docker.withRegistry( '', registryCredential ) {
+                            dockerImage.push()
+                            dockerImage.push('latest')
                         }
                     }
                 }
