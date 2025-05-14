@@ -33,28 +33,36 @@ pipeline{
             }
         }
 
-        stage('Build and Push Docker Image') {
+        stage('Build and Push') {
             steps {
                 withCredentials([
-                    file(credentialsId: 'gcp-key', variable: 'GCP_CREDENTIALS'),
+                    file(credentialsId: 'gcp-key', variable: 'GCP_CRED'),
                     usernamePassword(
                         credentialsId: 'dockerhub',
                         usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
+                        passwordVariable: 'DOCKER_PWD'
                     )
                 ]) {
                     script {
-                        sh '''
-                            cp "$GCP_CREDENTIALS" long-state-452316-d2-1e09a3e52402.json
-                            docker build -t "$DOCKER_USER"/ml-project .
-                            rm -f long-state-452316-d2-1e09a3e52402.json
-                        '''
+                        def imageName = "${DOCKER_USER}/ml-project"
                         
-                        sh '''
-                            echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin
-                            docker push ${DOCKER_USER}/ml-project:${env.BUILD_NUMBER}
-                            docker push ${DOCKER_USER}/ml-project:latest
-                        '''
+                        // Build
+                        sh """
+                            cp "${GCP_CRED}" credentials.json
+                            docker build \\
+                                -t "${imageName}:${env.BUILD_NUMBER}" \\
+                                -t "${imageName}:latest" \\
+                                .
+                            rm -f credentials.json
+                        """
+                        
+                        withEnv(["DOCKER_PWD=${DOCKER_PWD}", "DOCKER_USER=${DOCKER_USER}"]) {
+                            sh '''
+                                echo "$DOCKER_PWD" | docker login -u "$DOCKER_USER" --password-stdin "$DOCKER_REGISTRY"
+                                docker push "$DOCKER_USER"/ml-project:${env.BUILD_NUMBER}
+                                docker push "$DOCKER_USER"/ml-project:latest
+                            '''
+                        }
                     }
                 }
             }
