@@ -43,15 +43,15 @@ pipeline{
 
                         echo ${GOOGLE_APPLICATION_CREDENTIALS}
 
-                        // gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
+                        gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
-                        // gcloud config set project ${GCP_PROJECT}
+                        gcloud config set project ${GCP_PROJECT}
 
-                        // gcloud auth configure-docker --quiet
+                        gcloud auth configure-docker --quiet
 
-                        // docker build -t ml-project:latest .
+                        docker build -t ml-project:latest .
 
-                        // docker push ml-project:latest 
+                        docker push ml-project:latest 
 
                         '''
                     }
