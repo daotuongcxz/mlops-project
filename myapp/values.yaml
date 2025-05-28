@@ -1,0 +1,4 @@
+image:
+  repository: truongnguyen250902/mlops
+  tag: "latest"
+  pullPolicy: Always
