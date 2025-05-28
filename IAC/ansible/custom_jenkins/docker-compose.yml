@@ -1,7 +1,7 @@
-version: '3.8'
+version: '2.4'
 services:
   jenkins:
-    image: jenkins-dind:latest
+    image: truongnguyen250902/jenkins:ml
     container_name: jenkins
     restart: unless-stopped
     privileged: true
